@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+{% block title %}Nueva Película{% endblock %}
+{% block main %}
+	{{ parent() }}
+	
+	<h1 class="display-6">Crear una nueva película en <b>Symfofilms</b></h1>
+
+	<p>A lo largo de las próximas semanas iremos editando este ejemplo para dotarlo de nuevas características y funcionalidades.</p>
+
+	{{ form(formulario) }}
+	
+{% endblock %}

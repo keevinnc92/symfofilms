@@ -1,0 +1,25 @@
+twig:
+  #directorio por defecto para los templates
+    default_path: '%kernel.project_dir%/templates'
+
+
+    paths: 
+        '%kernel.project_dir%/public/css' : styles
+        
+        '%kernel.project_dir%/public/images' : images
+
+
+    #variables globales para todas las vistas
+    globals:
+      #directorio para las caractulas
+        covers_directory: '%app.covers%'
+      #servicio frase
+        frasesService: '@App\Service\FrasesService'
+
+    #Para que aplique por defecto bootstrap a todas las vistas(formulrios...)
+    form_themes: ['bootstrap_5_layout.html.twig']
+
+
+when@test:
+    twig:
+        strict_variables: true

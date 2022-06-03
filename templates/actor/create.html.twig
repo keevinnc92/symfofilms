@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+{% block title %}Nuevo Actor{% endblock %}
+{% block main %}
+	{{ parent() }}
+	<h1 class="display-6">Crear un nuevo actor</h1>
+
+	{{ form(formulario) }}
+	
+{% endblock %}

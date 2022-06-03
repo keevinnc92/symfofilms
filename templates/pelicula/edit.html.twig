@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+{% block title %}Edición de la película{{ pelicula.titulo }}{% endblock %}
+{% block main %}
+	{{ parent() }}
+	{# <p>Edición de la película <b>{{pelicula.titulo}}</b>.</p> #}
+
+
+	<div class="bg-light border row align-items-center justify-content-center my-3">
+
+
+	<div class="col my-3 p-3 text-start">
+			<h1 class="display-6">Edición de la película <b>{{pelicula.titulo}}</b>.</h1>
+			{{ form(formulario) }}
+	</div>
+	<div class="col m-3 p-3 text-center bg-light">
+		<figure class="my-2 p-2">
+			<img class="rounded border movie-cover" style="max-width: 240px" alt="Carátula de {{pelicula.titulo}}" title="Carátula de {{pelicula.titulo}}" src="{{asset(covers_directory~'/'~(pelicula.caratula ?? 'default.jpg'))}}">
+			{% if pelicula.caratula %}
+				<figcaption class="my-3 text-center">
+					Borrar esta caratúla
+					<a href="{{path('pelicula_delete_cover', {'id':pelicula.id})}}">
+						<img src="{{asset('images/buttons/delete.png')}}" height="30" width="30" alt="Borrar carátula" title="Borrar carátula">
+					</a>
+				</figcaption>
+			{% endif %}
+		</figure>
+	
+	</div>
+	</div>
+
+	
+{% endblock %}

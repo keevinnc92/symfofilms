@@ -4,6 +4,35 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    #ruta de las imágenes respecto a la carpeta public (MODIFICABLE)
+    app.name: '%env(APP_NAME)%'
+    app.admin_email: 'kevinchongb@gmail.com'
+
+
+
+   #Parámetros adicionales
+
+    #directorio para la subida de ficheros por defecto
+    app.uploads_dir: '%kernel.project_dir%/uploads'
+
+    #directorio para la subida de carátulas (relativa y absoluta)
+    app.covers: '%env(APP_COVERS)%'
+    app.covers_root: '%kernel.project_dir%/public/%app.covers%'
+
+    #directorio para la subida de retratos de actores (relativa y absoluta)
+    app.portraits: '%env(APP_PORTRAITS)%'
+    app.portraits_root: '%kernel.project_dir%public/%app.portraits%'
+
+    #directorio para la subida de fotos de usuario (relativa y absoluta)
+    app.users_pics: '%env(APP_USERS_PICS)%'
+    app.users_pics_root: '%kernel.project_dir%public/%app.users_pics%'
+
+    #número de resultados por página para la paginación
+    app.page_results: 5
+
+
+
+
 
 services:
     # default configuration for services in *this* file
@@ -19,6 +48,10 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+
+    App\Service\FileService:
+        arguments:
+            $targetDirectory: '%app.uploads_dir%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+{% block title %}Detalles de {{ pelicula.nombre }}{% endblock %}
+{% block main %}
+	{{ parent() }}
+	<h1 class="display-6">{{pelicula.titulo}}</h1>
+
+	<p>Detalles de la película {{pelicula.titulo}}, de {{pelicula.director}} en <b>SymfoFilms</b>.</p>
+
+	<p>A lo largo de las próximas semanas iremos editando este ejemplo para dotarlo de nuevas características y funcionalidades.</p>
+
+	<div class="border my-3 p-3">
+		<p><b>ID</b>: {{pelicula.id}}</p>
+
+		<td>{{actor.id}}</td>
+		<td>{{actor.nombre}}</td>
+		{# <td>{{actor.fecha_nacimiento}}</td> #}
+		<td>{{  actor.fecha_nacimiento|date("m/d/Y") }} </td>
+		{# {{ actor.fecha_nacimiento|date("m/d/Y") }} #}
+		<td>{{actor.nacionalidad}}</td>
+		<td>{{actor.biografia}}</td>
+
+		<p><b>ID</b>: {{pelicula.id}}</p>
+		<p><b>Título</b>: {{pelicula.titulo}}</p>
+		<p><b>Duración</b>: {{pelicula.duracion}}</p>
+		<p><b>Director</b>: {{pelicula.director}}</p>
+		<p><b>Género</b>: {{pelicula.genero}}</p>
+		<p><b>Estreno</b>: {{pelicula.estreno}}</p>
+		<p><b>Valoración: {{pelicula.valoracion}}/5</b></p>
+	</div>
+	{% if pelicula.sinopsis %}
+		<div class="border row align-items-center justify-content-center my-3 p-4">
+			<h2>Sinopsis:</h2>
+			<p>{{pelicula.sinopsis}}</p>
+		</div>
+	{% endif %}
+{% endblock %}
