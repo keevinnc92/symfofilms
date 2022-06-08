@@ -36,7 +36,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=16, unique=true)
+     * @ORM\Column(type="string", length=16, unique=true, nullable=true)
      */
     private $phone;
 
@@ -49,6 +49,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string", length=64, nullable=true)
      */
     private $city;
+
+    /**
+     * @ORM\Column(type="string", length=32)
+     */
+    private $displayname;
 
     public function getId(): ?int
     {
@@ -152,6 +157,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCity(?string $city): self
     {
         $this->city = $city;
+
+        return $this;
+    }
+
+    public function getDisplayname(): ?string
+    {
+        return $this->displayname;
+    }
+
+    public function setDisplayname(string $displayname): self
+    {
+        $this->displayname = $displayname;
 
         return $this;
     }

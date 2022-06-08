@@ -25,6 +25,27 @@
     </head>
 
     <body class="container p-3">
+
+        {% block login %}
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                <div class="my-1 text-end">
+                    <a href="#TODO">
+                        {{ app.user.displayname }}
+                        <span style="font-size: 0.8em">{{ app.user.email }}</span>
+                    </a>
+                    -
+                    <a href="{{ path('app_logout')}}">Logout</a>
+                </div>
+            {% else %}
+                <div class="my-1 text-end">
+                    <a style="vertical-align: middle" href="{{ path('app_login' )}}">
+                        Login
+                        <img src="{{ asset('images/buttons/login.png') }}" alt="Login" height="25" width="25">
+                    </a>
+                </div>
+            {% endif %}
+        {% endblock %}
+
         {% block header %}
             <header class="row border bg-light">
                 <hgroup class="col-8">
@@ -39,6 +60,7 @@
                 </figure>
             </header>
         {% endblock %}
+
         {% block nav %}
             <div class="container row">
                 <nav class="col-9">

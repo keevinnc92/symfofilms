@@ -46,7 +46,7 @@ class CreateUserCommand extends Command
 
     // proceso de ejecución del comando
     protected function execute(InputInterface $input, OutputInterface $output): int{
-        $output->writeln('<fg=white;bg=black>Crear usuario');
+        $output->writeln('<fg=white;bg=black>Crear usuario</>');
 
         // recupera los datos de los parámetros de consola
         $email = $input->getArgument('email');
@@ -62,7 +62,7 @@ class CreateUserCommand extends Command
         $user = (new User())->setEmail($email)->setDisplayname($displayname);
         
         // encripta el password y lo asigna
-        $hashedPassword = $this->passwordHasher->hashedPassword($user, $password);
+        $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
         $user->setPassword($hashedPassword);
 
         // guarda el usuario en la BDD
