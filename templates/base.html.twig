@@ -29,7 +29,7 @@
         {% block login %}
             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                 <div class="my-1 text-end">
-                    <a href="#TODO">
+                    <a href="{{ path('home')}}">
                         {{ app.user.displayname }}
                         <span style="font-size: 0.8em">{{ app.user.email }}</span>
                     </a>

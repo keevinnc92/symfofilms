@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+{% block title %}Borrado el actor {{ actor.nombre }}{% endblock %}
+{% block main %}
+	{{ parent() }}
+	<p>Borrado del actor <b>{{actor.nombre}}</b>.</p>
+
+	<p>Por favor, confirma la operación de borrado mediante el formulario.</p>
+
+	{{ form(formulario) }}
+	
+{% endblock %}
