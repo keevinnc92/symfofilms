@@ -26,7 +26,7 @@
 
     <body class="container p-3">
 
-        {% block login %}
+        {% block register %}
             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
                 <div class="my-1 text-end">
                     <a href="{{ path('home')}}">
@@ -41,6 +41,11 @@
                     <a style="vertical-align: middle" href="{{ path('app_login' )}}">
                         Login
                         <img src="{{ asset('images/buttons/login.png') }}" alt="Login" height="25" width="25">
+                    </a>
+                    <span>/</span>
+                    <a style="vertical-align: middle" href="{{ path('app_register' )}}">
+                        Register
+                        <img src="{{ asset('images/buttons/register.png') }}" alt="register" height="25" width="25">
                     </a>
                 </div>
             {% endif %}
