@@ -70,4 +70,11 @@
 			</tr>
 		{% endfor %}
 	</table>
+	{% 
+		include '/includes/paginator.html.twig' with
+		{
+			'route': 'pelicula_list',
+			'entidades': 'peliculas',
+		}
+	 %}
 {% endblock %}

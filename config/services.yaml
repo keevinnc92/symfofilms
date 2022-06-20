@@ -53,5 +53,8 @@ services:
         arguments:
             $targetDirectory: '%app.uploads_dir%'
 
+    App\Service\PaginatorService:
+        arguments:
+            $limit: '%app.page_results%'
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

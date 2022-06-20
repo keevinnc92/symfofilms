@@ -14,16 +14,31 @@ use App\Form\PeliculaFormType;
 use App\Form\PeliculaDeleteFormType;
 
 use App\Service\FileService;
+use App\Service\PaginatorService;
 
 
 
 class PeliculaController extends AbstractController
 {
-    #[Route('/peliculas', name: 'pelicula_list')]
-    public function list(ManagerRegistry $doctrine): Response{
-    	$peliculas = $doctrine->getRepository(Pelicula::class)->findAll();
-        return $this->render("pelicula/list.html.twig", ["peliculas" => $peliculas]);
+    #[Route("/peliculas/{pagina}", defaults: ["pagina"=>1], name: "pelicula_list")]
+    public function index(int $pagina, PaginatorService $paginator): Response{
+        // le indicamos al paginador que tabajaremos con Pelicula
+        $paginator->setEntityType('App\Entity\Pelicula');
+
+        // le pedimos que nos recupere todas las películas con paginación
+        $peliculas = $paginator->findAllEntities($pagina);
+
+        // carga la visa del listado de películas, pasándole toda la información
+        return $this->renderForm("pelicula/list.html.twig", [
+            "peliculas" => $peliculas,
+            "paginator" => $paginator
+        ]);
     }
+    // #[Route('/peliculas', name: 'pelicula_list')]
+    // public function list(ManagerRegistry $doctrine): Response{
+    //     $peliculas = $doctrine->getRepository(Pelicula::class)->findAll();
+    //     return $this->render("pelicula/list.html.twig", ["peliculas" => $peliculas]);
+    // }
 
     #[Route('/pelicula/create', name: 'pelicula_create')]
     public function create(Request $request, ManagerRegistry $doctrine, FileService $uploader):Response{
