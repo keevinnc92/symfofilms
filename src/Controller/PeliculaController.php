@@ -12,9 +12,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Pelicula;
 use App\Form\PeliculaFormType;
 use App\Form\PeliculaDeleteFormType;
+use App\Form\SearchFormType;
+
 
 use App\Service\FileService;
 use App\Service\PaginatorService;
+use App\Service\SimpleSearchService;
 
 
 
@@ -34,11 +37,6 @@ class PeliculaController extends AbstractController
             "paginator" => $paginator
         ]);
     }
-    // #[Route('/peliculas', name: 'pelicula_list')]
-    // public function list(ManagerRegistry $doctrine): Response{
-    //     $peliculas = $doctrine->getRepository(Pelicula::class)->findAll();
-    //     return $this->render("pelicula/list.html.twig", ["peliculas" => $peliculas]);
-    // }
 
     #[Route('/pelicula/create', name: 'pelicula_create')]
     public function create(Request $request, ManagerRegistry $doctrine, FileService $uploader):Response{
@@ -74,7 +72,45 @@ class PeliculaController extends AbstractController
             return $this->render('pelicula/create.html.twig',['formulario' =>$formulario->createView()]);
     }
 
-    #[Route('/pelicula/{id<\d+>}', name: 'pelicula_show')]
+    #[Route('/pelicula/search}', name: 'pelicula_search', methods: ['GET', 'POST'])]
+    public function search(Request $request, SimpleSearchService $busqueda):Response{
+
+        // crea el formulario
+        $formulario = $this->createForm(SearchFormType::class, $busqueda, [
+            'field_choices' => [
+                'Título' => 'titulo',
+                'Director' => 'director',
+                'Género' => 'genero',
+                'Sinopsis' => 'sinopsis'
+            ],
+            'order_choices' => [
+                'ID' => 'id',
+                'Título' => 'titulo',
+                'Director' => 'director',
+                'Género' => 'genero',
+            ]
+        ]);
+
+        $formulario->get('campo')->setData($busqueda->campo);
+        $formulario->get('orden')->setData($busqueda->orden);
+
+        // gestiona el formulario y recupera los valores de búsqueda
+        $formulario->handleRequest($request);
+
+        //realiza la búsqueda
+        $peliculas = $busqueda->search('App\Entity\Pelicula');
+
+        //retorna la vista con los resultados
+        return $this->renderForm("pelicula/buscar.html.twig", [
+            "formulario" => $formulario,
+            "peliculas" => $peliculas
+        ]);
+
+    }
+
+
+
+    #[Route('/pelicula/show/{id<\d+>}', name: 'pelicula_show')]
     public function show(Pelicula $pelicula):Response{
         return $this->render("pelicula/show.html.twig", ["pelicula" => $pelicula]);
     }
