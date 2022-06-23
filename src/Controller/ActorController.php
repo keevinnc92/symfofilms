@@ -16,8 +16,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Psr\Log\LoggerInterface;
+use App\Form\SearchFormType;
 
 use App\Service\FileService;
+
+use App\Service\SimpleSearchService;
 
 class ActorController extends AbstractController
 {
@@ -34,6 +37,42 @@ class ActorController extends AbstractController
     public function list(ActorRepository $actorRepository): Response{
     	$actores = $actorRepository->findAll();
         return $this->render("actor/list.html.twig", ["actores" => $actores]);
+    }
+
+    #[Route('/actor/search}', name: 'actor_search', methods: ['GET', 'POST'])]
+    public function search(Request $request, SimpleSearchService $busqueda):Response{
+
+        // crea el formulario
+        $formulario = $this->createForm(SearchFormType::class, $busqueda, [
+            'field_choices' => [
+                'Nombre' => 'nombre',
+                'Fecha nacimiento' => 'fecha_nacimiento',
+                'Nacionalidad' => 'nacionalidad',
+                'Biografía' => 'biografia'
+            ],
+            'order_choices' => [
+                'ID' => 'id',
+                'Nombre' => 'nombre',
+                'Nacionalidad' => 'nacionalidad',
+                'Biografía' => 'biografia'
+            ]
+        ]);
+
+        $formulario->get('campo')->setData($busqueda->campo);
+        $formulario->get('orden')->setData($busqueda->orden);
+
+        // gestiona el formulario y recupera los valores de búsqueda
+        $formulario->handleRequest($request);
+
+        //realiza la búsqueda
+        $actores = $busqueda->search('App\Entity\Actor');
+
+        //retorna la vista con los resultados
+        return $this->renderForm("actor/buscar.html.twig", [
+            "formulario" => $formulario,
+            "actores" => $actores
+        ]);
+
     }
 
 

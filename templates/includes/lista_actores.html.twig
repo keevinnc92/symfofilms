@@ -1,12 +1,3 @@
-{# Insertamos la base #}
-{% extends 'base.html.twig' %}
-
-{# Aplicamos el titulo #}
-{% block title %}Catálogo de actores{% endblock %} 
-{% block main %}
-	{{ parent() }}
-	<h1 class="display-6">Listado de actores</h1>
-
 
 	<table class="table table-striped table-bordered">
 		<tr>
@@ -43,4 +34,3 @@
 			</tr>
 		{% endfor %}
 	</table>
-{% endblock %}
