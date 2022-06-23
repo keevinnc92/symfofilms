@@ -21,7 +21,7 @@
         "symfony/mailer": "6.0.*",
         "symfony/maker-bundle": "^1.43",
         "symfony/mime": "6.0.*",
-        "symfony/monolog-bundle": "^3.0",
+        "symfony/monolog-bundle": "^3.8",
         "symfony/proxy-manager-bridge": "6.0.*",
         "symfony/runtime": "6.0.*",
         "symfony/security-bundle": "6.0.*",

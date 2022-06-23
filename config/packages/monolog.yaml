@@ -1,7 +1,13 @@
 monolog:
     channels:
         - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
-
+        - app_info
+    handlers:
+        appinfo:
+            type: stream
+            path: "%kernel.logs_dir%/app.info.log"
+            channels: ["app_info"]
+            buffer_size: 500
 when@dev:
     monolog:
         handlers:
@@ -9,7 +15,7 @@ when@dev:
                 type: stream
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
                 level: debug
-                channels: ["!event"]
+                channels: ["!event", "!app_info"]
             # uncomment to get logging in your browser
             # you may have to allow bigger header sizes in your Web server configuration
             #firephp:

@@ -8,6 +8,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Psr\Log\LoggerInterface;
 
 use App\Entity\Pelicula;
 use App\Form\PeliculaFormType;
@@ -39,7 +40,7 @@ class PeliculaController extends AbstractController
     }
 
     #[Route('/pelicula/create', name: 'pelicula_create')]
-    public function create(Request $request, ManagerRegistry $doctrine, FileService $uploader):Response{
+    public function create(Request $request, LoggerInterface $appInfoLogger, ManagerRegistry $doctrine, FileService $uploader):Response{
 
             $pelicula = new Pelicula();
 
@@ -63,7 +64,9 @@ class PeliculaController extends AbstractController
                 $entityManager->flush();
 
                 //mensaje de notificación
-                $this->addFlash('success', 'Película guardada con id '.$pelicula->getId());
+                $mensaje = "Película ".$pelicula->getTitulo()." guardada correctamente";
+                $this->addFlash('success', $mensaje);
+                $appInfoLogger->info($mensaje);
 
                 return $this->redirectToRoute('pelicula_show', ['id' => $pelicula->getId()]);
             }
