@@ -119,7 +119,7 @@ class PeliculaController extends AbstractController
     }
 
     #[Route('/pelicula/edit/{id}', name: 'pelicula_edit')]
-    public function edit(Pelicula $pelicula, Request $request, ManagerRegistry $doctrine, FileService $uploader):Response{
+    public function edit(Pelicula $pelicula, LoggerInterface $appInfoLogger, Request $request, ManagerRegistry $doctrine, FileService $uploader):Response{
 
         $formulario = $this->createForm(PeliculaFormType::class, $pelicula);
         $formulario->handleRequest($request);
@@ -134,7 +134,10 @@ class PeliculaController extends AbstractController
 
             $entityManager = $doctrine->getManager();
             $entityManager->flush();
-            $this->addFlash('success', 'Película actualizada correctamente.');
+            $mensaje = "Película con id:".$pelicula->getId()." actualizada correctamente";
+
+            $appInfoLogger->info($mensaje);
+            $this->addFlash('success', $mensaje);
             return $this->redirectToRoute('pelicula_show', ['id'=>$pelicula->getId()]);
         }
 
@@ -147,7 +150,7 @@ class PeliculaController extends AbstractController
     }
 
     #[Route('/pelicula/delete/{id}', name: 'pelicula_delete')]
-    public function delete(Pelicula $pelicula, Request $request, ManagerRegistry $doctrine, FileService $uploader):Response{
+    public function delete(Pelicula $pelicula, Request $request,  LoggerInterface $appInfoLogger, ManagerRegistry $doctrine, FileService $uploader):Response{
 
         $formulario = $this->createForm(PeliculaDeleteFormType::class, $pelicula);
         $formulario->handleRequest($request);
@@ -159,12 +162,17 @@ class PeliculaController extends AbstractController
                 $uploader->targetDirectory = $this->getParameter('app.covers_root');
                 $uploader->remove($pelicula->getCaratula());
             }
+            
+            $id_pelicula = $pelicula->getId();
 
             $entityManager = $doctrine->getManager();
             $entityManager->remove($pelicula);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Película eliminada correctamente.');
+            $mensaje = "Película con id:".$id_pelicula." borrada correctamente";
+            $appInfoLogger->info($mensaje);
+
+            $this->addFlash('success', $mensaje);
 
             return $this->redirectToRoute('pelicula_list');
         }

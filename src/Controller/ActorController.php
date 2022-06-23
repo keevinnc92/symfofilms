@@ -15,6 +15,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Psr\Log\LoggerInterface;
 
 use App\Service\FileService;
 
@@ -37,13 +38,15 @@ class ActorController extends AbstractController
 
 
     #[Route('/actor/create', name: 'actor_create', methods: ['GET', 'POST'])]
-    public function create(Request $request, ActorRepository $actorRepository): Response{
+    public function create(Request $request, LoggerInterface $appInfoLogger, ActorRepository $actorRepository): Response{
         $actor = new Actor();
         $formulario = $this->createForm(ActorFormType::class, $actor);
         $formulario->handleRequest($request);
 
         if ($formulario->isSubmitted() && $formulario->isValid()) {
             $actorRepository->add($actor, true);
+            $mensaje = "Actor con id:".$actor->getId()." guardado correctamente";
+            $appInfoLogger->info($mensaje);
 
             return $this->redirectToRoute('actor_list', [], Response::HTTP_SEE_OTHER);
         }
@@ -87,7 +90,7 @@ class ActorController extends AbstractController
     }
 
     #[Route('/actor/delete/{id}', name: 'actor_delete')]
-    public function delete(Actor $actor, Request $request, ManagerRegistry $doctrine, FileService $uploader):Response{
+    public function delete(Actor $actor, Request $request, LoggerInterface $appInfoLogger, ManagerRegistry $doctrine, FileService $uploader):Response{
 
         $formulario = $this->createForm(ActorDeleteFormType::class, $actor);
         $formulario->handleRequest($request);
@@ -99,12 +102,18 @@ class ActorController extends AbstractController
             //     $uploader->targetDirectory = $this->getParameter('app.covers_root');
             //     $uploader->remove($pelicula->getCaratula());
             // }
+            $id_actor = $actor->getId();
 
             $entityManager = $doctrine->getManager();
             $entityManager->remove($actor);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Actor eliminado correctamente.');
+
+            $mensaje = "Actor con id:".$id_actor." eliminado correctamente";
+
+            $appInfoLogger->info($mensaje);
+
+            $this->addFlash('success', $mensaje);
 
             return $this->redirectToRoute('actor_list');
         }
