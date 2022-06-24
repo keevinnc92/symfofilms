@@ -1,0 +1,13 @@
+{# Insertamos la base #}
+{% extends 'base.html.twig' %}
+
+{# Aplicamos el titulo #}
+{% block title %}Catálogo de películas{% endblock %} 
+{% block main %}
+	{{ parent() }}
+	<h1 class="display-6">Listado de películas</h1>
+	<h3>Películas</h3>
+
+	{# LISTADO DE PELÍCULAS #}
+	{% include '/includes/lista_peliculas.html.twig' %}
+{% endblock %}

@@ -39,6 +39,17 @@ class PeliculaRepository extends ServiceEntityRepository
         }
     }
 
+    public function findAllByDuration(int $min, int $max):array{
+        return $this->getEntityManager()->createQuery("
+            SELECT p 
+            FROM App\Entity\Pelicula p 
+            WHERE p.duracion BETWEEN :min AND :max
+            ORDER BY p.duracion DESC"
+        )->setParameter("min", $min)
+        ->setParameter("max", $max)
+        ->getResult();
+    }
+
 //    /**
 //     * @return Pelicula[] Returns an array of Pelicula objects
 //     */

@@ -204,9 +204,21 @@ class PeliculaController extends AbstractController
 
         return $this->redirectToRoute('pelicula_edit', ['id' => $pelicula->getId()]);
 
+    }
 
+    #[Route('/pelicula/duracion/{min<\d*>}/{max<\d*>}', name: 'pelicula_duracion', defaults: ["min"=>0, "max"=>99999])]
+    public function duracion(int $min, int $max, ManagerRegistry $doctrine){
+        $repositorio = $doctrine->getRepository(Pelicula::class);
+        $peliculas = $repositorio->findAllByDuration($min, $max);
+
+        return $this->renderForm("pelicula/list_sinpaginator.html.twig", ['peliculas' => $peliculas]);
 
     }
 
 
+
 }
+
+
+
+
