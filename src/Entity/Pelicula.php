@@ -57,10 +57,18 @@ class Pelicula
      */
     private $caratula;
     
-    public function __toString(){
-        return "$this->titulo($this->duracion m), de $this->director. Género $this->genero";
-    }
+    // public function __toString(){
+    //     return "$this->titulo($this->duracion m), de $this->director. Género $this->genero";
+    // }
 
+
+    // método __toString de Pelcula (útil para)
+    public function __toString(){
+        return "ID: $this->id - $this->titulo
+                ($this->estreno - $this->duracion min, de $this->director.
+                GÉNERO: $this->genero
+                VAL: ".($this->valoracion ?? 'Sin valorar')." / 5";
+    }
 
     public function getId(): ?int
     {

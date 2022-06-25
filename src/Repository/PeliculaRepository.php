@@ -50,6 +50,18 @@ class PeliculaRepository extends ServiceEntityRepository
         ->getResult();
     }
 
+    // Nos muestra las úiltimas peliíulas subidas
+    //Recibe el número de peliculas a listar (por defecto 10)
+    public function novedadesPeliculas(int $num=10){
+        
+        return $this->getEntityManager()->createQuery("
+            SELECT p 
+            FROM App\Entity\Pelicula p
+            ORDER BY p.id DESC"
+        )->setMAxResults($num)
+        ->getResult();
+    }
+
 //    /**
 //     * @return Pelicula[] Returns an array of Pelicula objects
 //     */

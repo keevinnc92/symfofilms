@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,16 +13,24 @@ use App\Form\ContactoFormType;
 use Symfony\Component\Mime\Email;
 
 use App\Service\FrasesService;
+use App\Entity\Pelicula;
 
 
 class DefaultController extends AbstractController
 {
     #[Route('/', name: 'portada')]
-    public function index(FrasesService $frases): Response
+    public function index(FrasesService $frases,  ManagerRegistry $doctrine): Response
     {
+
+        $repository = $doctrine->getRepository(Pelicula::class);
+        $last_peliculas = $repository->novedadesPeliculas();
+
+
         return $this->render('portada.html.twig', [
             // 'controller_name' => 'DefaultController',
             'frase' => $frases->getFraseAleatoria(),
+            'peliculas' => $last_peliculas,
+
         ]);
     }
 

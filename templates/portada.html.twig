@@ -5,14 +5,16 @@
 	<p>Esta es la portada del sitio web <b>SymfoFilms</b>.</p>
 
 	<div class="d-flex">
-		<figure class="m-2">
-			<img class="img-fluid" alt="akira" src="{{asset('/images/template/akira.jpg')}}">
-		</figure>
-		<figure class="m-2">
-			<img  class="img-fluid" alt="terminator2" src="{{asset('/images/template/terminator2.jpg')}}">
-		</figure>
-		<figure class="m-2">
-			<img  class="img-fluid" alt="mejor" src="{{asset('/images/template/mejor.jpg')}}">
-		</figure>
+
+
+		{% for pelicula in peliculas %}
+			<a href="{{path('pelicula_show', {'id':pelicula.id})}}">
+				<figure class="m-2">
+					<img class="img-fluid" alt="akira" width="220px;" src="{{asset(covers_directory~'/'~(pelicula.caratula ?? 'default.jpg'))}}"  >
+
+				</figure>
+			</a>
+		{% endfor %}
+
 	</div>
 {% endblock %}

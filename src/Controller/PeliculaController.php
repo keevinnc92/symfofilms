@@ -24,6 +24,8 @@ use App\Service\SimpleSearchService;
 
 class PeliculaController extends AbstractController
 {
+
+
     #[Route("/peliculas/{pagina}", defaults: ["pagina"=>1], name: "pelicula_list")]
     public function index(int $pagina, PaginatorService $paginator): Response{
         // le indicamos al paginador que tabajaremos con Pelicula
