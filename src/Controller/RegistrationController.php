@@ -18,6 +18,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
+use App\Service\FileService;
+
 class RegistrationController extends AbstractController
 {
     private EmailVerifier $emailVerifier;
@@ -28,7 +30,7 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, LoginFormAuthenticator $authenticator, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, LoginFormAuthenticator $authenticator, EntityManagerInterface $entityManager, FileService $uploader): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -43,6 +45,13 @@ class RegistrationController extends AbstractController
                 )
             );
 
+            //SUBIDA IMG RETRATO
+            $uploader->targetDirectory = $this->getParameter('app.users_pics_root');
+            $file = $form->get('fotografia')->getData();
+            if ($file) {
+                $user->setFotografia($uploader->upload($file));
+            }
+
             $entityManager->persist($user);
             $entityManager->flush();
 
@@ -51,10 +60,11 @@ class RegistrationController extends AbstractController
                 (new TemplatedEmail())
                     ->from(new Address('register@symfofilms.com', 'Registro de usuarios'))
                     ->to($user->getEmail())
-                    ->subject('Please Confirm your Email')
-                    ->htmlTemplate('user/confirmation_email.html.twig')
+                    ->subject('Porfavor confirma tu Email')
+                    ->htmlTemplate('email/register_verification.html.twig')
             );
-            // do anything else you need here, like send an email
+
+            $this->addFlash('success', 'Operación realizada, revisa tu email y haz clic en el enlace para completar la operación de registro.');
 
             return $userAuthenticator->authenticateUser(
                 $user,

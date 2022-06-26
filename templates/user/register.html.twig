@@ -23,6 +23,20 @@
                             {{ form_row(registrationForm.country, {label: 'País'}) }}
                         </div>
                     </div>
+                    {{form_row(registrationForm.fotografia, {label: 'Fotografía'})}}
+            </div>
+            <div class="col-4 text-center">
+                <h4 class="my-2">Previsualización</h4>
+                    <figure class="my-2 p-2">
+                        <img id="preview" 
+                        class="rounded border movie-cover"
+                        style="max-width: 220px"
+                        src="{{asset('/images/samples/default.jpg')}}">
+                        <figcaption class="my-3 text-center">
+                            Imagen de usuario
+                        </figcaption>
+                    </figure>
+                    <script src="{{ asset('/js/previewCreateUser.js')}}"></script>
             </div>
         </div>
         <h3 class="mt-3">Términos y condiciones</h3>

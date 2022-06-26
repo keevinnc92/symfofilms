@@ -14,6 +14,9 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+
+use Symfony\Component\Validator\Constraints\File;
 
 
 class RegistrationFormType extends AbstractType
@@ -50,7 +53,18 @@ class RegistrationFormType extends AbstractType
             ->add('displayname', TextType::class)
             ->add('phone', TelType::class,['required' => false])
             ->add('city', TextType::class,['required' => false])
-            ->add('country', TextType::class,['required' => false]);
+            ->add('country', TextType::class,['required' => false])
+            ->add('fotografia', FileType::class, [
+                'required' => false,
+                'data_class' => NULL,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '10240k',
+                        'mimeTypes' => ['image/jpeg', 'image/png', 'image/gif'],
+                        'mimeTypesMessage' => 'Debes subir una imagen png, jpg o gif'
+                    ])
+                ]
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

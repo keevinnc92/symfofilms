@@ -38,10 +38,11 @@ class CreateUserCommand extends Command
     // método para indicar la configuración del comando
     protected function configure(): void{
         $this->setDescription('Este comando nos permite crear usuarios')
-             ->setHelp('Los parámetros son email y password')
+             ->setHelp('Los parámetros son email, nombre, password y verified')
              ->addArgument('email', InputArgument::REQUIRED, 'Email:')
              ->addArgument('displayname', InputArgument::REQUIRED, 'Nombre para mostrar:')
-             ->addArgument('password', InputArgument::REQUIRED, 'Password:');
+             ->addArgument('password', InputArgument::REQUIRED, 'Password:')
+             ->addArgument('is_verified', InputArgument::OPTIONAL, 'Verified:');
     }  
 
     // proceso de ejecución del comando
@@ -52,6 +53,8 @@ class CreateUserCommand extends Command
         $email = $input->getArgument('email');
         $password = $input->getArgument('password');
         $displayname = $input->getArgument('displayname');
+        $is_verified = $input->getArgument('is_verified') ? 1:0;
+
 
         if ($this->userRepository->findOneBy(['email' => $email])) {
             $output->writeln("<error> El usuario con email $email ya ha sido registrado anteriormente</error>");
@@ -64,6 +67,7 @@ class CreateUserCommand extends Command
         // encripta el password y lo asigna
         $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
         $user->setPassword($hashedPassword);
+        $user->setIsVerified($is_verified);
 
         // guarda el usuario en la BDD
         $this->em->persist($user);
