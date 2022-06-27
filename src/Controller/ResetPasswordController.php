@@ -75,11 +75,11 @@ class ResetPasswordController extends AbstractController
      * Validates and process the reset URL that the user clicked in their email.
      */
     #[Route('/reset/{token}', name: 'app_reset_password')]
-    public function reset(Request $request, UserPasswordHasherInterface $userPasswordHasher, string $token = null): Response
+    public function reset(Request $request, UserPasswordHasherInterface $passwordHasher, string $token = null): Response
     {
+        // Si nos viene el token por la URL
+        // Tiene que venir al haber hecho clic en el enlace del email
         if ($token) {
-            // We store the token in session and remove it from the URL, to avoid the URL being
-            // loaded in a browser and potentially leaking the token to 3rd party JavaScript.
             $this->storeTokenInSession($token);
 
             return $this->redirectToRoute('app_reset_password');
@@ -110,14 +110,21 @@ class ResetPasswordController extends AbstractController
             // A password reset token should be used only once, remove it.
             $this->resetPasswordHelper->removeResetRequest($token);
 
-            // Encode(hash) the plain password, and set it.
-            $encodedPassword = $userPasswordHasher->hashPassword(
+            $hashedPassword = $passwordHasher->hashPassword(
                 $user,
                 $form->get('plainPassword')->getData()
             );
 
+            // Encode(hash) the plain password, and set it.
+            // $encodedPassword = $userPasswordHasher->hashPassword(
+            //     $user,
+            //     $form->get('plainPassword')->getData()
+            // );
+
             $user->setPassword($encodedPassword);
             $this->entityManager->flush();
+
+            $this->addFlash('success', 'Tu petición se ha procesado con éxito');
 
             // The session is cleaned up after the password has been changed.
             $this->cleanSessionAfterReset();
@@ -158,10 +165,10 @@ class ResetPasswordController extends AbstractController
         }
 
         $email = (new TemplatedEmail())
-            ->from(new Address('resetpassword@symfofilms.com', 'Reset Password'))
+            ->from(new Address('resetpassword@symfofilms.com', 'Restablecer clave'))
             ->to($user->getEmail())
-            ->subject('Your password reset request')
-            ->htmlTemplate('reset_password/email.html.twig')
+            ->subject('Petición de restablecer clave')
+            ->htmlTemplate('email/email.html.twig')
             ->context([
                 'resetToken' => $resetToken,
             ])
