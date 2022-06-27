@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Form\UserDeleteFormType;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
 use App\Security\LoginFormAuthenticator;
@@ -17,6 +18,11 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+use Psr\Log\LoggerInterface;
+use Doctrine\Persistence\ManagerRegistry;
+
+use Symfony\Component\HttpFoundation\RequestStack;
+
 
 use App\Service\FileService;
 
@@ -107,4 +113,58 @@ class RegistrationController extends AbstractController
 
         return $this->redirectToRoute('app_register');
     }
+
+
+    // Dar de baja usuario
+    #[Route('/unsubscribe}', name: 'unsubscribe', methods: ['GET', 'POST'])]
+    public function unsubscribe(Request $request, ManagerRegistry $doctrine, LoggerInterface $appUserInfoLogger, FileService $uploader, RequestStack $requestStack):Response{
+
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        $usuario = $this->getUser(); //recuperamos usuario logeado
+        
+        $formulario = $this->createForm(UserDeleteFormType::class, $usuario);
+        $formulario->handleRequest($request);
+
+        if ($formulario->isSubmitted() && $formulario->isValid()) {
+            $uploader->targeDirectory = $this->getParameter('app.users_pics_root');
+
+            if ($usuario->getFotografia()) {
+                $uploader->delete($usuario->getFotografia());
+            }
+
+            // $entityManager = $this->getDoctrine()->getManager();
+            $entityManager = $doctrine->getManager();
+            $entityManager->remove($usuario);
+            $entityManager->flush();
+
+            $session = $this->requestStack->getSession();
+
+            // $this->container->get('security.token_storage')->setToken(null);
+            // $this->container->get('session')->invalidate();
+
+            // TODO: como cerrar sesión!!!
+            // $session->get('security.token_storage')->setToken(null);
+            // $session->get('session')->invalidate();
+
+            // flashear el mensaje
+            $mensaje = 'Usuario '.$usuario->getDisplayname().' eliminado correctamente';
+            $this->addFlash('success', $mensaje);
+            
+            // loguear el mensaje
+            $mensaje = 'Usuario '.$usuario->getDisplayname().' se ha dado de baja.';
+            $appUserInfoLogger->warning($mensaje);
+
+            // redirigimos a portada
+            return $this->redirectToRoute('portada');
+        }
+
+        return $this->renderForm("user/delete.html.twig", [
+            "formulario" => $formulario,
+            "usuario" => $usuario
+        ]);
+
+    }
+
+
 }
