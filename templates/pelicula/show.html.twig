@@ -20,6 +20,11 @@
 				<b>Valoración:</b>
 			 	<b>{{ pelicula.valoracion ? pelicula.valoracion ~'/5':'Sin valorar'}}</b>
 			</p>
+			{% if pelicula.getUser() %}
+				<p>
+					<i>Película aportada por <b>{{ pelicula.getUser().displayname}}</b></i>
+				</p>
+			{% endif %}
 		</div>
 		<div class="col m-3 p-3 text-center bg-light">
 			<img class="rounded border movie-cover" style="max-width: 240px" alt="Carátula de {{pelicula.titulo}}" title="Carátula de {{pelicula.titulo}}" src="{{asset(covers_directory~'/'~(pelicula.caratula ?? 'default.jpg'))}}">

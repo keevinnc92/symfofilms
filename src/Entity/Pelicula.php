@@ -56,6 +56,11 @@ class Pelicula
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $caratula;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="peliculas")
+     */
+    private $user;
     
     // public function __toString(){
     //     return "$this->titulo($this->duracion m), de $this->director. Género $this->genero";
@@ -167,6 +172,18 @@ class Pelicula
     public function setCaratula(?string $caratula): self
     {
         $this->caratula = $caratula;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

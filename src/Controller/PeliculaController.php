@@ -59,6 +59,10 @@ class PeliculaController extends AbstractController
                     $uploader->targetDirectory = $this->getParameter('app.covers_root');
                     $pelicula->setCaratula($uploader->upload($file));
                 }
+
+                //Guardamos el usuario creador de la pelicula
+                $pelicula->setUser($this->getUser());
+
                 // dd($pelicula);die;
                 //Guardamos los datos
                 $entityManager = $doctrine->getManager();

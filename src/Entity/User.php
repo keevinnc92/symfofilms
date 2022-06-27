@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -59,6 +61,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $fotografia;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Pelicula::class, mappedBy="user")
+     */
+    private $peliculas;
+
+    public function __construct()
+    {
+        $this->peliculas = new ArrayCollection();
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -181,6 +193,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFotografia(?string $fotografia): self
     {
         $this->fotografia = $fotografia;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Pelicula>
+     */
+    public function getPeliculas(): Collection
+    {
+        return $this->peliculas;
+    }
+
+    public function addPelicula(Pelicula $pelicula): self
+    {
+        if (!$this->peliculas->contains($pelicula)) {
+            $this->peliculas[] = $pelicula;
+            $pelicula->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePelicula(Pelicula $pelicula): self
+    {
+        if ($this->peliculas->removeElement($pelicula)) {
+            // set the owning side to null (unless already changed)
+            if ($pelicula->getUser() === $this) {
+                $pelicula->setUser(null);
+            }
+        }
 
         return $this;
     }
