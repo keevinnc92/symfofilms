@@ -27,4 +27,9 @@
 			</div>
 		</div>
 	</div>
+	<h3>Aportaciones</h3>
+	{% set peliculas = app.user.getPeliculas() %}
+	<p>Este usuario ha añadido {{ peliculas|length }} películas a SymfoFilms.</p>
+	{# incluye la subvista con la lista de películas #}
+	{% include '/includes/lista_peliculas.html.twig' %}
 {% endblock %}
